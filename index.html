@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منقذ صغير... بطل كبير - الهلال الأحمر المصري فرع السويس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; user-select: none; }
+        body { background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; color: #333; }
+        
+        .header { text-align: center; margin-bottom: 15px; background: white; padding: 15px 25px; border-radius: 25px; box-shadow: 0 8px 25px rgba(220, 20, 60, 0.15); width: 100%; max-width: 650px; border: 3px solid #ffcccc; }
+        .logo-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #d32f2f; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h1 { color: #d32f2f; font-size: 24px; font-weight: 900; margin-bottom: 3px; }
+        .header h2 { color: #e53935; font-size: 18px; font-weight: 700; background: #fff0f0; padding: 6px 15px; border-radius: 20px; display: inline-block; border: 2px dashed #ff8080; }
+
+        .screen { width: 100%; max-width: 650px; display: flex; flex-direction: column; align-items: center; }
+        .hidden { display: none !important; }
+
+        .home-menu { display: flex; flex-direction: column; gap: 20px; width: 100%; margin-top: 20px; }
+        .menu-btn { background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%); color: white; border: none; padding: 22px; font-size: 22px; font-weight: 900; border-radius: 25px; cursor: pointer; box-shadow: 0 8px 20px rgba(211, 47, 47, 0.4); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 15px; border: 3px solid #ff8080; }
+        .menu-btn:active { transform: scale(0.96); }
+
+        .game-container { background: white; border-radius: 30px; padding: 20px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; border: 4px solid #ffcccc; text-align: center; }
+        .back-btn { background: #666; color: white; border: none; padding: 8px 20px; border-radius: 15px; font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 15px; float: right; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .score-board { font-size: 18px; font-weight: 900; color: #d32f2f; margin-bottom: 15px; background: #ffebee; padding: 8px 20px; border-radius: 20px; display: inline-block; clear: both; }
+
+        /* لعبة شنطة الطوارئ */
+        .bag-arena { position: relative; width: 100%; height: 420px; background: #f9f9f9; border-radius: 20px; border: 2px dashed #ddd; display: flex; align-items: center; justify-content: center; margin-top: 10px; overflow: hidden; }
+        .center-bag { width: 130px; height: 130px; background: #d32f2f; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; box-shadow: 0 10px 25px rgba(211, 47, 47, 0.4); border: 4px solid #fff; z-index: 5; }
+        .center-bag span { font-size: 45px; }
+        .center-bag p { font-size: 14px; font-weight: 700; margin-top: 5px; }
+
+        .item-node { position: absolute; width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; border: 3px solid #ffccd5; transition: 0.2s; }
+        .item-node:hover { transform: scale(1.1); }
+        .item-node span { font-size: 32px; }
+        .item-node label { font-size: 10px; font-weight: 700; color: #555; margin-top: -2px; background: rgba(255,255,255,0.9); padding: 0 4px; border-radius: 5px; }
+
+        /* لعبة القابل للاشتعال */
+        .flammable-top-area { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; background: #fdf2f2; padding: 15px; border-radius: 20px; min-height: 130px; align-items: center; border: 2px dashed #ff8080; margin-bottom: 20px; }
+        .drag-card { width: 75px; height: 75px; background: white; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: grab; border: 3px solid #ccc; touch-action: none; }
+        .drag-card span { font-size: 35px; }
+        .drag-card:active { cursor: grabbing; }
+
+        .bins-container { display: flex; gap: 15px; justify-content: center; }
+        .drop-bin { flex: 1; background: #fff5f5; border: 3px dashed #d32f2f; border-radius: 20px; padding: 15px; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
+        .drop-bin h3 { font-size: 16px; color: #d32f2f; margin-bottom: 10px; font-weight: 900; }
+        .drop-bin.highlight { background: #ffebee; transform: scale(1.03); border-color: #b71c1c; }
+
+        .win-msg { font-size: 22px; font-weight: 900; color: #2e7d32; margin: 15px 0; background: #e8f5e9; padding: 10px; border-radius: 15px; border: 2px solid #81c784; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="32748.jpg" class="logo-img" alt="الهلال الأحمر المصري فرع السويس" onerror="this.src='https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=150'">
+        <h1>الهلال الأحمر المصري - فرع السويس</h1>
+        <h2>منقذ صغير... بطل كبير 🌟</h2>
+    </div>
+
+    <!-- الشاشة الرئيسية -->
+    <div id="homeScreen" class="screen">
+        <div class="home-menu">
+            <button class="menu-btn" onclick="switchGame(1)">🎒 1. لعبة شنطة الطوارئ والكوارث</button>
+            <button class="menu-btn" onclick="switchGame(2)">🔥 2. لعبة المواد القابلة للاشتعال</button>
+        </div>
+    </div>
+
+    <!-- لعبة شنطة الطوارئ -->
+    <div id="game1Screen" class="screen hidden">
+        <div class="game-container">
+            <button class="back-btn" onclick="goHome()">🏠 القائمة الرئيسية</button>
+            <div style="clear:both"></div>
+            <h3>اضغطي على العناصر التي يجب وضعها في الشنطة فقط!</h3>
+            <div class="score-board">النقاط: <span id="g1Score">0</span> / 4</div>
+            
+            <div class="bag-arena" id="bagArena">
+                <div class="center-bag">
+                    <span>🎒</span>
+                    <p>شنطة الطوارئ</p>
+                </div>
+            </div>
+            <div id="g1Win" class="win5 hidden"></div>
+        </div>
+    </div>
+
+    <!-- لعبة القابل للاشتعال -->
+    <div id="game2Screen" class="screen hidden">
+        <div class="game-container">
+            <button class="back-btn" onclick="goHome()">🏠 القائمة الرئيسية</button>
+            <div style="clear:both"></div>
+            <h3>اسحبي كل عنصر وضعيّه في الصندوق المناسب له بالأسفل:</h3>
+            
+            <div class="flammable-top-area" id="itemsPool"></div>
+
+            <div class="bins-container">
+                <div class="drop-bin" id="binFlammable" ondragover="allowDrop(event)" ondragleave="removeDropStyle(event)" ondrop="dropItem(event, true)">
+                    <h3>🔥 قابل للإشتعال</h3>
+                </div>
+                <div class="drop-bin" id="binSafe" ondragover="allowDrop(event)" ondragleave="removeDropStyle(event)" ondrop="dropItem(event, false)">
+                    <h3>🛡️ غير قابل للإشتعال</h3>
+                </div>
+            </div>
+            <div id="g2Win" class="hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        function switchGame(gameNum) {
+            document.getElementById('homeScreen').classList.add('hidden');
+            if(gameNum === 1) {
+                document.getElementById('game1Screen').classList.remove('hidden');
+                initGame1();
+            } else {
+                document.getElementById('game2Screen').classList.remove('hidden');
+                initGame2();
+            }
+        }
+
+        function goHome() {
+            document.getElementById('game1Screen').classList.add('hidden');
+            document.getElementById('game2Screen').classList.add('hidden');
+            document.getElementById('homeScreen').classList.remove('hidden');
+        }
+
+        // --- لعبة شنطة الطوارئ ---
+        const g1Items = [
+            { id: 1, name: "إزازة ماء", icon: "💧", correct: true },
+            { id: 2, name: "أكل معلب", icon: "🥫", correct: true },
+            { id: 3, name: "دواء واسعافات", icon: "🩹", correct: true },
+            { id: 4, name: "فلوس نقدية", icon: "💵", correct: true },
+            { id: 5, name: "موزة", icon: "🍌", correct: false },
+            { id: 6, name: "شاشة كمبيوتر", icon: "💻", correct: false },
+            { id: 7, name: "ألعاب وأشياء", icon: "🎮", correct: false }
+        ];
+        let g1ScoreCount = 0;
+
+        function initGame1() {
+            g1ScoreCount = 0;
+            document.getElementById('g1Score').innerText = g1ScoreCount;
+            const arena = document.getElementById('bagArena');
+            // إزالة العناصر القديمة عدا الشنطة
+            const oldNodes = arena.querySelectorAll('.item-node');
+            oldNodes.forEach(n => n.remove());
+
+            // خلط العناصر عشوائياً في شكل دائري حول الشنطة
+            const shuffled = [...g1Items].sort(() => Math.random() - 0.5);
+            const total = shuffled.length;
+            const radius = 125; // نصف قطر الدائرة
+            const centerX = arena.offsetWidth / 2 - 37;
+            const centerY = arena.offsetHeight / 2 - 37;
+
+            shuffled.forEach((item, index) => {
+                const angle = (index / total) * 2 * Math.PI;
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const node = document.createElement('div');
+                node.className = 'item-node';
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+                node.innerHTML = `<span>${item.icon}</span><label>${item.name}</label>`;
+                
+                node.onclick = () => handleG1Click(item, node);
+                arena.appendChild(node);
+            });
+        }
+
+        function handleG1Click(item, node) {
+            if(item.correct) {
+                node.style.transition = "0.5s";
+                node.style.left = "calc(50% - 37px)";
+                node.style.top = "calc(50% - 37px)";
+                node.style.opacity = "0";
+                setTimeout(() => node.remove(), 500);
+                g1ScoreCount++;
+                document.getElementById('g1Score').innerText = g1ScoreCount;
+                if(g1ScoreCount === 4) {
+                    setTimeout(() => {
+                        alert("🎉 بطل عظيم! جمعت شنطة الطوارئ بنجاح!");
+                    }, 500);
+                }
+            } else {
+                node.style.animation = "shake 0.3s";
+                setTimeout(() => node.style.animation = "", 300);
+                alert("❌ هذا العنصر ليس أساسياً في شنطة الطوارئ!");
+            }
+        }
+
+        // --- لعبة القابل للاشتعال ---
+        const g2ItemsData = [
+            { id: 'c1', name: 'تورتة بشموع', icon: '🎂', flammable: true },
+            { id: 'c2', name: 'ولاعة جيب', icon: '🔥', flammable: true },
+            { id: 'c3', name: 'سيجارة', icon: '🚬', flammable: true },
+            { id: 'c4', name: 'دبدوب', icon: '🧸', flammable: false },
+            { id: 'c5', name: 'قلم', icon: '✏️', flammable: false },
+            { id: 'c6', name: 'سماعة', icon: '🎧', flammable: false }
+        ];
+
+        function initGame2() {
+            const pool = document.getElementById('itemsPool');
+            pool.innerHTML = '';
+            const shuffled2 = [...g2ItemsData].sort(() => Math.random() - 0.5);
+            
+            shuffled2.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'drag-card';
+                card.draggable = true;
+                card.id = item.id;
+                card.dataset.flammable = item.flammable;
+                card.innerHTML = `<span>${item.icon}</span>`;
+                
+                // أحداث السحب والإفلات للكمبيوتر والموبايل
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                });
+
+                // دعم النقر المباشر للأطفال بسهولة
+                card.onclick = () => {
+                    if(item.flammable) {
+                        document.getElementById('binFlammable').appendChild(card);
+                    } else {
+                        document.getElementById('binSafe').appendChild(card);
+                    }
+                    checkG2Win();
+                };
+
+                pool.appendChild(card);
+            });
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('highlight');
+        }
+
+        function removeDropStyle(e) {
+            e.currentTarget.classList.remove('highlight');
+        }
+
+        function dropItem(e, isFlammableTarget) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(id);
+            if(!card) return;
+
+            const cardFlammable = card.dataset.flammable === 'true';
+            if(cardFlammable === isFlammableTarget) {
+                e.currentTarget.appendChild(card);
+                e.currentTarget.classList.remove('highlight');
+                checkG2Win();
+            } else {
+                alert("❌ محاولة خاطئة، جربي الصندوق الآخر!");
+                e.currentTarget.classList.remove('highlight');
+            }
+        }
+
+        function checkG2Win() {
+            const pool = document.getElementById('itemsPool');
+            if(pool.children.length === 0) {
+                setTimeout(() => {
+                    alert("🏆 أحسنتِ! لقد صنفتِ جميع العناصر بمهارة وبطولة فائقة!");
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
